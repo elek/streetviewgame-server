@@ -1,0 +1,58 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'jetty'
+
+group = 'net.anzix'
+version = '1.0-SNAPSHOT'
+  
+//description = """todo"""
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+
+repositories {        
+     mavenCentral();
+}
+
+httpPort = 9999
+
+jettyRun {
+    contextPath = "/"
+}
+
+dependencies {
+   compile 'com.sun.jersey:jersey-core:1.17.1'
+   compile 'com.sun.jersey:jersey-server:1.17.1'
+   compile 'com.sun.jersey.contribs:jersey-guice:1.17.1'
+   compile 'com.sun.jersey:jersey-servlet:1.17.1'
+   compile 'com.sun.jersey:jersey-json:1.17.1'
+   compile 'com.wordnik:swagger-jaxrs_2.9.1:1.2.1'
+   compile 'ch.qos.logback:logback-classic:1.0.12'
+   compile 'javax.servlet:javax.servlet-api:3.0.1'
+   compile 'javax.ws.rs:jsr311-api:1.1.1'
+   compile 'com.google.guava:guava:14.0'
+   compile 'com.google.inject:guice:3.0'
+   compile 'com.google.inject.extensions:guice-servlet:3.0'
+   compile 'args4j:args4j:2.0.16'
+   testCompile 'junit:junit:4.7'
+   compile 'ch.qos.logback:logback-classic:1.0.12'
+   compile 'org.mongojack:mongojack:2.0.0-RC5'
+   compile 'com.google.api-client:google-api-client:1.14.1-beta'
+   compile 'com.google.apis:google-api-services-plus:v1-rev70-1.14.2-beta'
+   compile 'com.google.http-client:google-http-client-jackson:1.14.1-beta'
+   compile 'com.google.apis:google-api-services-oauth2:v2-rev37-1.14.2-beta'
+   testCompile 'org.mockito:mockito-core:1.9.5'
+   //just for the mirgration
+   compile 'mysql:mysql-connector-java:5.1.25'
+
+
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.4'
+}
+
+compileJava.options.encoding = 'utf-8'
+
+
