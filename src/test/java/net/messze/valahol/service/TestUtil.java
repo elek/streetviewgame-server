@@ -59,6 +59,7 @@ public class TestUtil {
 
                 defaultProperties.put("googleApiSecret", "valahol");
                 defaultProperties.put("googleApiClientId", "valahol");
+                defaultProperties.put("googleBrowserApiKey", "valahol");
                 Names.bindProperties(binder(),defaultProperties);
                 bind(type);
                 bind(MongodbPersistence.class);
