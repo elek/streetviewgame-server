@@ -106,12 +106,12 @@ public class PuzzleApi {
     public Response thumbnail(@ApiParam(value = "The id of the puzzle", required = true)
                               @PathParam("id") String id) {
         Puzzle p = persistenceService.find(Puzzle.class, id);
-
-        File cacheFile = new File("/tmp/r/id.jpg");
+        File cacheDir = new File(System.getProperty("java.io.tmpdir"), "valahol");
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs();
+        }
+        File cacheFile = new File(cacheDir, id + ".jpg");
         if (!cacheFile.exists()) {
-            if (!cacheFile.getParentFile().exists()) {
-                cacheFile.getParentFile().mkdirs();
-            }
             try {
                 URL url = new URL("http://maps.googleapis.com/maps/api/streetview?size=300x100&location=" + p.getLat() +
                         "," + p.getLng() + "&heading=" + p.getPitch() + "&pitch=" + p.getPitch() + "&sensor=false&key=" + apiKey);
