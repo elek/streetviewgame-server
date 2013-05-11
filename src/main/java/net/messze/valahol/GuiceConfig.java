@@ -1,6 +1,7 @@
 package net.messze.valahol;
 
 
+import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.name.Names;
@@ -28,35 +29,7 @@ public class GuiceConfig extends GuiceServletContextListener {
 
             @Override
             protected void configureServlets() {
-                File configFile = new File(System.getProperty("user.home"), ".valahol");
-                if (System.getenv("VALAHOL_CONFIG") != null) {
-                    configFile = new File(System.getenv("VALAHOL_CONFIG"));
-                }
-                LOG.info("Trying to load properties from " + configFile.getAbsolutePath());
-                Properties defaultProperties = new Properties();
-                defaultProperties.put("mongoHost", "localhost");
-                defaultProperties.put("mongoPort", "27017");
-                defaultProperties.put("mongoDb", "valahol");
-                Properties p = new Properties(defaultProperties);
-                if (configFile.exists()) {
-                    try {
-                        p.load(new FileInputStream(configFile));
-                    } catch (IOException e) {
-                        LOG.error("Can't load config file " + configFile.getAbsolutePath(), e);
-                    }
-                }
-                Set<String> keys = new TreeSet<String>();
-                for (Object o : p.keySet()) {
-                    keys.add(o.toString());
-                }
-                for (Object o : defaultProperties.keySet()) {
-                    keys.add(o.toString());
-                }
-
-                for (Object property : keys) {
-                    LOG.debug("Property " + property.toString() + "=" + p.getProperty(property.toString()) + " " + (p.getProperty(property.toString()).equals(defaultProperties.getProperty(property.toString())) ? "(default)" : ""));
-                }
-                Names.bindProperties(binder(), p);
+                loadConfiguration(binder());
                 JaxrsApiReader.setFormatString("");
                 bind(MongodbPersistence.class);
                 bind(JacksonJsonProvider.class);
@@ -64,10 +37,43 @@ public class GuiceConfig extends GuiceServletContextListener {
                 bind(PuzzleApi.class);
                 bind(UserApi.class);
                 bind(AuthApi.class);
+                bind(MiscApi.class);
                 bind(SwaggerApiList.class);
                 Names.bindProperties(binder(), new Properties());
                 serve("/rest/*").with(GuiceContainer.class);
             }
         });
+    }
+
+    public static void loadConfiguration(Binder binder) {
+        File configFile = new File(System.getProperty("user.home"), ".valahol");
+        if (System.getenv("VALAHOL_CONFIG") != null) {
+            configFile = new File(System.getenv("VALAHOL_CONFIG"));
+        }
+        LOG.info("Trying to load properties from " + configFile.getAbsolutePath());
+        Properties defaultProperties = new Properties();
+        defaultProperties.put("mongoHost", "localhost");
+        defaultProperties.put("mongoPort", "27017");
+        defaultProperties.put("mongoDb", "valahol");
+        Properties p = new Properties(defaultProperties);
+        if (configFile.exists()) {
+            try {
+                p.load(new FileInputStream(configFile));
+            } catch (IOException e) {
+                LOG.error("Can't load config file " + configFile.getAbsolutePath(), e);
+            }
+        }
+        Set<String> keys = new TreeSet<String>();
+        for (Object o : p.keySet()) {
+            keys.add(o.toString());
+        }
+        for (Object o : defaultProperties.keySet()) {
+            keys.add(o.toString());
+        }
+
+        for (Object property : keys) {
+            LOG.debug("Property " + property.toString() + "=" + p.getProperty(property.toString()) + " " + (p.getProperty(property.toString()).equals(defaultProperties.getProperty(property.toString())) ? "(default)" : ""));
+        }
+        Names.bindProperties(binder, p);
     }
 }
