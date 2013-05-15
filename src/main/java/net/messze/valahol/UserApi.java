@@ -2,6 +2,7 @@
 package net.messze.valahol;
 
 import com.wordnik.swagger.annotations.*;
+import net.messze.valahol.data.User;
 import net.messze.valahol.data.UserDetails;
 import net.messze.valahol.service.MongodbPersistence;
 
@@ -22,6 +23,14 @@ public class UserApi {
 
     @Inject
     MongodbPersistence persistenceService;
+
+
+    @GET
+    @Path("/all")
+    @ApiOperation(value = "Return with all users", responseClass = "net.messze.valahol.data.UserDetails",notes = "Pagination is TODO")
+    public Response all() {
+        return Response.ok(persistenceService.findAll(User.class, null)).build();
+    }
 
     @GET
     @Path("/{id}")

@@ -4,11 +4,14 @@ import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import net.messze.valahol.UserApi;
 import net.messze.valahol.data.Solution;
+import net.messze.valahol.data.User;
 import net.messze.valahol.data.UserDetails;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.List;
 
 public class UserApiTest {
     private static DB db;
@@ -36,6 +39,15 @@ public class UserApiTest {
             System.out.println(sol.getPuzzleId());
         }
         Assert.assertEquals(2, user.getSolvedPuzzles().size());
+    }
+
+    @Test
+    public void all() {
+        UserApi api = TestUtil.createApi(UserApi.class);
+
+        List<User> user = (List<User>) api.all().getEntity();
+        Assert.assertEquals(2,user.size());
+
     }
 
 
