@@ -8,6 +8,7 @@ import com.google.inject.Injector;
 import com.google.inject.name.Names;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
+import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;
 import net.messze.valahol.AuthApi;
 import org.bson.types.ObjectId;
@@ -18,9 +19,21 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 public class TestUtil {
+
+    /**
+     * Entry point to fill a database with the test data.
+     * @param args
+     */
+    public static void main(String args[]) throws Exception {
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        DB db = mongoClient.getDB("valahol");
+        defaultState(db);
+
+    }
 
     private static void restore(DB db, String collection, String... files) throws IOException {
         db.getCollection(collection).drop();
