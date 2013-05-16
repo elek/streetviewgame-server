@@ -131,24 +131,39 @@ public class PuzzleApi {
 
     @POST
     @ApiOperation(value = "Send a new solution")
+    @ApiErrors(value = {
+            @ApiError(code = 401, reason = "If the user session doesn't exist (use one of the /auth functions to create the session)"),
+            @ApiError(code = 404, reason = "If the specified puzzle doesn't exist")
+    })
     @Path("/{id}/solution")
     @Consumes("application/json")
     public Response solve(@ApiParam(value = "The id of the puzzle to solve", required = true)
-                          @PathParam("id") String id, @ApiParam(value = "Solution object to update", required = true) Solution solution) {
+                          @PathParam("id") String id,
+                          @ApiParam(value = "Solution object to update", required = true) SolutionInput solutionTry,
+                          @Context javax.servlet.http.HttpServletRequest request) {
+
+        String uid = (String) request.getSession().getAttribute(AuthApi.USER_ID);
+        if (uid == null || uid.equals("")) {
+            return Response.status(401).build();
+        }
+
         Puzzle puzzle = persistenceService.find(Puzzle.class, id);
-        solution.setDate(new Date());
         if (puzzle == null) {
             return Response.status(404).build();
         }
-        //todo user the current one from the session.
+
+        Solution solution = new Solution(solutionTry);
         solution.setPuzzleName(puzzle.getLabel());
+        solution.setPuzzleId(id);
+        solution.setUserId(uid);
+        solution.setDate(new Date());
         SolutionResponse response = new SolutionResponse();
         if (puzzle.getAnswer().equals(solution.getAnswer())) {
             solution.setType(1);
             response.setGood(true);
             response.setResponse("IGEEEN.");
-            User currentUser = persistenceService.find(User.class, solution.getUserId());
-            puzzle.addSolver(new Solver(solution.getUserId(), currentUser.getUserName(), solution.getScore(), solution.getDate()));
+            User currentUser = persistenceService.find(User.class, uid);
+            puzzle.addSolver(new Solver(uid, currentUser.getUserName(), solution.getScore(), solution.getDate()));
             persistenceService.update(Puzzle.class, puzzle.getId(), puzzle);
             persistenceService.create(solution);
         } else {
@@ -157,8 +172,8 @@ public class PuzzleApi {
             response.setResponse("Nem, nem.");
             Guess g = new Guess();
             g.setDate(solution.getDate());
-            g.setUserId(solution.getUserId());
-            g.setPuzzleId(solution.getUserId());
+            g.setUserId(uid);
+            g.setPuzzleId(solution.getPuzzleId());
             g.setPuzzleName(solution.getPuzzleName());
             g.setAnswer(solution.getAnswer());
             persistenceService.create(g);

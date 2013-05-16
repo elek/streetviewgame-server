@@ -37,8 +37,9 @@ public class GuiceConfig extends GuiceServletContextListener {
                 bind(PuzzleApi.class);
                 bind(UserApi.class);
                 bind(AuthApi.class);
-                bind(MiscApi.class);
+//                bind(MiscApi.class);
                 bind(SwaggerApiList.class);
+                bind(DevApi.class);
                 Names.bindProperties(binder(), new Properties());
                 serve("/rest/*").with(GuiceContainer.class);
             }

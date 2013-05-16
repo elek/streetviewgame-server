@@ -27,6 +27,14 @@ public class Solution {
 
     private Date date;
 
+    public Solution() {
+    }
+
+    public Solution(SolutionInput input) {
+        this.answer = input.getAnswer();
+        this.score = input.getScore();
+    }
+
     public String getAnswer() {
         return answer;
     }

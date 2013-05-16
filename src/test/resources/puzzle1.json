@@ -8,4 +8,15 @@
     "heading" : 0,
     "pitch" : 0,
     "userId" : "518ca1354a047ca1f9fac1cc",
-    "date" : "2013-05-08T20:15:03.338Z"}
+    "date" : "2013-05-08T20:15:03.338Z",
+    "solvers" : [
+     { "userId" : "518ca1354a047ca1f9fac1cd",
+       "name": "Kisvig Miska",
+       "score" : 60,
+       "date" : "2013-05-08T20:20:32.747Z" },
+     {"userId" : "518ca1354a047ca1f9fac1cc",
+       "score" : 30,
+       "date" : "2013-05-08T20:20:32.747Z",
+       "name": "Hutira Geza"}
+   ]
+}

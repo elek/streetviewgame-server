@@ -12,8 +12,7 @@ import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Tokeninfo;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.*;
 import net.messze.valahol.data.User;
 import net.messze.valahol.service.MongodbPersistence;
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -64,8 +64,8 @@ public class AuthApi {
     @Path("/google")
     @Consumes("application/x-www-form-urlencoded")
     @ApiOperation(value = "Authenticate with a google plus provider")
-    public Response update(String content, @Context javax.servlet.http.HttpServletRequest request) throws GeneralSecurityException, IOException {
-        LOG.debug("Google is authenticated with token " + content +" ("+clientId+":"+apiSecret+")");
+    public Response update(String content, @Context HttpServletRequest request) throws GeneralSecurityException, IOException {
+        LOG.debug("Google is authenticated with token " + content + " (" + clientId + ":" + apiSecret + ")");
 
         NetHttpTransport TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
@@ -117,12 +117,7 @@ public class AuthApi {
 
     }
 
-    @POST
-    @Path("/dev")
-    @ApiOperation(value = "Authenticate in the development environment")
-    public void auth() {
 
-    }
 
 
 }
